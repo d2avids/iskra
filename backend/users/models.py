@@ -8,8 +8,6 @@ class User(AbstractUser):
         verbose_name='Email',
         unique=True,
         max_length=254,
-        null=True,
-        blank=True
     )
     last_name = models.CharField(
         verbose_name='Фамилия',
