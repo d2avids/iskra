@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_spectacular',
+    'rest_framework.authtoken',
+    'djoser',
 ]
 
 INSTALLED_APPS += [
@@ -137,6 +139,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES':[ 
+        'rest_framework.authentication.TokenAuthentication', 
+        'rest_framework.authentication.BasicAuthentication', 
+        'rest_framework.authentication.SessionAuthentication'
+        ],
+    'DEFAULT_PERMISSION_CLASSES': 'rest_framework.permissions.IsAuthenticated',
 }
 
 SPECTACULAR_SETTINGS = {
@@ -144,4 +152,17 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': '',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+}
+
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SEND_ACTIVATION_EMAIL': False,
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    'SERIALIZERS': {
+        'user_create_password_retype': 'users.serializers.UserCreateSerializer',
+        'user': 'users.serializers.UserSerializer',
+    },
 }

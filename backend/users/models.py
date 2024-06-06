@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from django.core.exceptions import ValidationError
 
 class User(AbstractUser):
     EMAIL_FIELD = 'email'
@@ -31,3 +31,23 @@ class User(AbstractUser):
         verbose_name='Согласие с политикой конфиденциальности',
         default=True
     )
+
+    class Meta:
+        verbose_name = 'Пользователь'
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        if self.email and User.objects.exclude(pk=self.pk).filter(
+                email__iexact=self.email
+        ).exists():
+            raise ValidationError('Данный Email уже зарегистрирован.')
+
+    def __str__(self):
+        return (
+            f'Пользователь {self.last_name} '
+            f'{self.first_name}. Id: {self.id}'
+        )
