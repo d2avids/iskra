@@ -42,3 +42,18 @@ class UserCreateSerializer(UserCreatePasswordRetypeSerializer):
                 'email': 'Пользователь с таким email уже существует.'
             })
         return super().validate(attrs)
+    
+
+class SafeUserSerializer(UserSerializer):
+    class Meta:
+        ref_name = 'safe_user'
+        model = User
+        fields = (
+            'id',
+            'email',
+            'last_name',
+            'first_name',
+            'patronymic',
+            'data_processing_agreement',
+            'confidential_policy_agreement',
+        )
