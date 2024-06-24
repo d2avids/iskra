@@ -10,19 +10,20 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'last_name',
             'first_name',
+            'username',
             'patronymic',
             'data_processing_agreement',
             'confidential_policy_agreement',
         )
-        
-class UserCreateSerializer(UserCreatePasswordRetypeSerializer):
 
+class UserCreateSerializer(UserCreatePasswordRetypeSerializer):
     class Meta(UserCreatePasswordRetypeSerializer.Meta):
         model = User
         fields = (
             'email',
             'last_name',
             'first_name',
+            'username',
             'patronymic',
             'password',
         )
@@ -32,17 +33,11 @@ class UserCreateSerializer(UserCreatePasswordRetypeSerializer):
             validated_data['last_name'] = validated_data['last_name'].capitalize()
         if 'first_name' in validated_data:
             validated_data['first_name'] = validated_data['first_name'].capitalize()
+        if 'username' in validated_data:
+            validated_data['username'] = validated_data['username'].capitalize()
         if 'patronymic' in validated_data:
             validated_data['patronymic'] = validated_data['patronymic'].capitalize()
         return super().create(validated_data)
-    
-    def validate(self, attrs):
-        if User.objects.filter(email=attrs.get('email')).exists():
-            raise serializers.ValidationError({
-                'email': 'Пользователь с таким email уже существует.'
-            })
-        return super().validate(attrs)
-    
 
 class SafeUserSerializer(UserSerializer):
     class Meta:
@@ -53,6 +48,7 @@ class SafeUserSerializer(UserSerializer):
             'email',
             'last_name',
             'first_name',
+            'username',
             'patronymic',
             'data_processing_agreement',
             'confidential_policy_agreement',

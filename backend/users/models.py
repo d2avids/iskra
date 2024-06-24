@@ -17,6 +17,11 @@ class User(AbstractUser):
         verbose_name='Имя',
         max_length=30
     )
+    username = models.CharField(
+        verbose_name='Ник нейм',
+        max_length=30,
+        unique=True
+    )
     patronymic = models.CharField(
         verbose_name='Отчество',
         max_length=40,
@@ -47,7 +52,5 @@ class User(AbstractUser):
             raise ValidationError('Данный Email уже зарегистрирован.')
 
     def __str__(self):
-        return (
-            f'Пользователь {self.last_name} '
-            f'{self.first_name}. Id: {self.id}'
-        )
+        return f'Пользователь {self.user_name} '
+

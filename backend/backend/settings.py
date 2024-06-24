@@ -148,7 +148,7 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Леся и Моа API',
+    'TITLE': 'Искра API',
     'DESCRIPTION': '',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
@@ -166,8 +166,3 @@ DJOSER = {
         'user': 'users.serializers.UserSerializer',
     },
 }
-
-AUTHENTICATION_BACKENDS = [
-    'users.backends.EmailBackend',
-    'django.contrib.auth.backends.ModelBackend',
-]
