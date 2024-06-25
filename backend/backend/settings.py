@@ -50,6 +50,8 @@ INSTALLED_APPS += [
     'api.apps.ApiConfig'
 ]
 
+AUTH_USER_MODEL = 'users.User'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -156,13 +158,19 @@ SPECTACULAR_SETTINGS = {
 
 
 DJOSER = {
+    'USER_ID_FIELD': 'email',
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
     'SEND_ACTIVATION_EMAIL': False,
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
     'SERIALIZERS': {
-        'user_create_password_retype': 'users.serializers.UserCreateSerializer',
+        'user_create': 'users.serializers.UserCreateSerializer',
         'user': 'users.serializers.UserSerializer',
+        'current_user': 'users.serializers.UserSerializer',
     },
 }
+
+AUTHENTICATION_BACKENDS = [
+    'api.backend.EmailBackend',
+]

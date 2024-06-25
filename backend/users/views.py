@@ -1,10 +1,18 @@
-from django.shortcuts import render
 from djoser.views import UserViewSet
-from rest_framework.response import Response, permissions
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from .models import User
+from .serializers import SafeUserSerializer, UserCreateSerializer
 from api.tasks import send_reset_password_email_without_user
-from users.models import User
-from rest_framework import status
-from users.serializers import SafeUserSerializer
+from rest_framework.views import APIView
+
+class UserRegistrationView(APIView):
+    def post(self, request):
+        serializer = UserCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CustomUserViewSet(UserViewSet):
     def reset_password(self, request, *args, **kwargs):
@@ -25,7 +33,7 @@ class CustomUserViewSet(UserViewSet):
                 {'detail': 'Найдено несколько пользователей с данным email'},
                 status=status.HTTP_409_CONFLICT
             )
-        
+
 class SafeUserViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = SafeUserSerializer

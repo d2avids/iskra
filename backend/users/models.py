@@ -1,7 +1,22 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.core.exceptions import ValidationError
 
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('The Email field must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+    
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(email, password, **extra_fields)
+    
 class User(AbstractUser):
     EMAIL_FIELD = 'email'
     email = models.EmailField(
@@ -16,11 +31,6 @@ class User(AbstractUser):
     first_name = models.CharField(
         verbose_name='Имя',
         max_length=30
-    )
-    username = models.CharField(
-        verbose_name='Ник нейм',
-        max_length=30,
-        unique=True
     )
     patronymic = models.CharField(
         verbose_name='Отчество',
@@ -37,20 +47,14 @@ class User(AbstractUser):
         default=True
     )
 
+    USERNAME_FIELD = 'email'
+    EMAIL_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'patronymic']
+
+    objects = CustomUserManager()
+
     class Meta:
         verbose_name = 'Пользователь'
 
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
-
-    def clean(self):
-        super().clean()
-        if self.email and User.objects.exclude(pk=self.pk).filter(
-                email__iexact=self.email
-        ).exists():
-            raise ValidationError('Данный Email уже зарегистрирован.')
-
     def __str__(self):
-        return f'Пользователь {self.user_name} '
-
+        return f'Пользователь {self.first_name}'
