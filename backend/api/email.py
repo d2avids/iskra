@@ -2,6 +2,7 @@ import os
 from django.conf import settings
 from djoser.email import PasswordResetEmail
 
+
 class CustomPasswordReset(PasswordResetEmail):
 
   template_name = os.path.join(settings.BASE_DIR, 'templates', 'email', 'password_reset.html')

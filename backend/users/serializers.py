@@ -4,6 +4,7 @@ from djoser.serializers import UserCreatePasswordRetypeSerializer
 
 User = get_user_model()
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -16,6 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
             'data_processing_agreement',
             'confidential_policy_agreement',
         )
+
 
 class UserCreateSerializer(UserCreatePasswordRetypeSerializer):
     class Meta(UserCreatePasswordRetypeSerializer.Meta):
@@ -31,10 +33,12 @@ class UserCreateSerializer(UserCreatePasswordRetypeSerializer):
             'confidential_policy_agreement',
         )
 
+
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError('Пользователь с таким email уже существует.')
         return value
+
 
     def create(self, validated_data):
         validated_data['last_name'] = validated_data['last_name'].capitalize()
@@ -51,17 +55,3 @@ class UserCreateSerializer(UserCreatePasswordRetypeSerializer):
             confidential_policy_agreement=validated_data['confidential_policy_agreement']
         )
         return user
-
-class SafeUserSerializer(UserSerializer):
-    class Meta:
-        ref_name = 'safe_user'
-        model = User
-        fields = (
-            'id',
-            'email',
-            'last_name',
-            'first_name',
-            'patronymic',
-            'data_processing_agreement',
-            'confidential_policy_agreement',
-        )

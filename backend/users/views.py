@@ -2,9 +2,10 @@ from djoser.views import UserViewSet
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from .models import User
-from .serializers import SafeUserSerializer, UserCreateSerializer
+from .serializers import UserCreateSerializer
 from api.tasks import send_reset_password_email_without_user
 from rest_framework.views import APIView
+
 
 class UserRegistrationView(APIView):
     def post(self, request):
@@ -13,6 +14,7 @@ class UserRegistrationView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CustomUserViewSet(UserViewSet):
     def reset_password(self, request, *args, **kwargs):
@@ -33,8 +35,3 @@ class CustomUserViewSet(UserViewSet):
                 {'detail': 'Найдено несколько пользователей с данным email'},
                 status=status.HTTP_409_CONFLICT
             )
-
-class SafeUserViewSet(UserViewSet):
-    queryset = User.objects.all()
-    serializer_class = SafeUserSerializer
-    permission_classes = (permissions.IsAuthenticated,)

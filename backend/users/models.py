@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.core.exceptions import ValidationError
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -12,11 +13,13 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
+
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
     
+
 class User(AbstractUser):
     EMAIL_FIELD = 'email'
     email = models.EmailField(
@@ -52,6 +55,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['first_name', 'last_name', 'patronymic']
 
     objects = CustomUserManager()
+
 
     class Meta:
         verbose_name = 'Пользователь'

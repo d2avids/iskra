@@ -158,7 +158,7 @@ SPECTACULAR_SETTINGS = {
 
 
 DJOSER = {
-    'USER_ID_FIELD': 'email',
+    'USER_ID_FIELD': 'id',
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
     'SEND_ACTIVATION_EMAIL': False,
