@@ -19,6 +19,7 @@ class CustomUserManager(BaseUserManager):
     
 
 class User(AbstractUser):
+    username = None
     email = models.EmailField(
         verbose_name='Email',
         unique=True,
