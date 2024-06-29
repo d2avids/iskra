@@ -187,3 +187,31 @@ DJOSER = {
 AUTHENTICATION_BACKENDS = [
     'api.backend.EmailBackend',
 ]
+
+REDIS_HOST = '127.0.0.1' if RUN_TYPE != 'DOCKER' else 'redis'
+
+# REDIS CACHE
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://{REDIS_HOST}:6379',
+        'OPTIONS': {
+            'db': '1',
+            'parser_class': 'redis.connection.PythonParser',
+            'pool_class': 'redis.BlockingConnectionPool',
+        }
+    },
+}
+
+# CELERY-REDIS CONFIG
+REDIS_PORT = '6379'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'
+CELERY_BROKEN_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', False) == 'True'
