@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
-from django.core.exceptions import ValidationError
 
 
 class CustomUserManager(BaseUserManager):
@@ -12,7 +11,6 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
-    
 
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
@@ -21,7 +19,6 @@ class CustomUserManager(BaseUserManager):
     
 
 class User(AbstractUser):
-    EMAIL_FIELD = 'email'
     email = models.EmailField(
         verbose_name='Email',
         unique=True,
@@ -52,12 +49,12 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'patronymic']
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     objects = CustomUserManager()
 
-
     class Meta:
+        verbose_name_plural = 'Пользователи'
         verbose_name = 'Пользователь'
 
     def __str__(self):

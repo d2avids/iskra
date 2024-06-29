@@ -1,6 +1,6 @@
 from djoser.views import UserViewSet
 from rest_framework.response import Response
-from rest_framework import status, permissions
+from rest_framework import status
 from .models import User
 from .serializers import UserCreateSerializer
 from api.tasks import send_reset_password_email_without_user

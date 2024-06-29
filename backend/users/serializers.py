@@ -33,12 +33,10 @@ class UserCreateSerializer(UserCreatePasswordRetypeSerializer):
             'confidential_policy_agreement',
         )
 
-
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError('Пользователь с таким email уже существует.')
         return value
-
 
     def create(self, validated_data):
         validated_data['last_name'] = validated_data['last_name'].capitalize()
