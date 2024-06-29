@@ -5,6 +5,12 @@ from djoser.serializers import UserCreatePasswordRetypeSerializer
 User = get_user_model()
 
 
+class EmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email',)
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -14,8 +20,6 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'first_name',
             'patronymic',
-            'data_processing_agreement',
-            'confidential_policy_agreement',
         )
 
 
