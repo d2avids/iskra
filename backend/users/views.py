@@ -4,6 +4,11 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
 from users.serializers import EmailSerializer
+from .serializers import UserSerializer
+from .premissions import IsUserOrReadOnly
+from rest_framework import permissions
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.exceptions import PermissionDenied
 
 from .models import User
 from api.tasks import send_reset_password_email_without_user
@@ -50,3 +55,22 @@ class CustomUserViewSet(UserViewSet):
                 )},
                 status=status.HTTP_409_CONFLICT
             )
+        
+
+class UserDetailViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated, IsUserOrReadOnly]
+
+    def get_queryset(self):
+        return self.queryset
+    
+    def perform_update(self, serializer):
+        if serializer.instance != self.request.user:
+            raise PermissionDenied("У вас недостаточно прав, для изменения информации другого пользователя")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        if instance != self.request.user:
+            raise PermissionDenied("У вас недостаточно прав, для удаления информации другого пользователя")
+        instance.delete()
