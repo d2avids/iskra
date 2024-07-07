@@ -2,11 +2,11 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
-from users.views import UserDetailViewSet
+from users.views import UserViewSet
 
 
 router = DefaultRouter()
-router.register(r'users_permissions', UserDetailViewSet, basename='user_permissions')
+router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
