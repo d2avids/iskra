@@ -178,8 +178,10 @@ DJOSER = {
         'current_user': 'users.serializers.UserSerializer',
     },
     'PERMISSIONS': {
-        'user_list': ['rest_framework.permissions.IsAuthenticated'],
-        'user': ['rest_framework.permissions.IsAuthenticated'],
+        'user_list': ['djoser.permissions.CurrentUserOrAdmin'],
+        'user': ['djoser.permissions.CurrentUserOrAdmin'],
+        'activation': ['rest_framework.permissions.IsAdminUser'],
+        'password_reset': ['rest_framework.permissions.IsAdminUser'],
     },
 }
 

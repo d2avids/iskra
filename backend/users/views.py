@@ -4,6 +4,8 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
 from users.serializers import EmailSerializer
+from rest_framework import permissions
+
 
 from .models import User
 from api.tasks import send_reset_password_email_without_user
