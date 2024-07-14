@@ -28,9 +28,10 @@ ALLOWED_HOSTS = os.getenv(
 ).split(',')
 
 DEFAULT_SITE_URL = os.getenv('DEFAULT_SITE_URL', default='127.0.0.1:8000')
-
 DATABASE = os.getenv('DATABASE', default='sqlite')
 RUN_TYPE = os.getenv('RUN_TYPE', default='LOCAL')
+
+EDUCATIONAL_ORGANIZATIONS_LIST_TTL = 60
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -184,7 +185,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication'
     ],
-    'DEFAULT_PERMISSION_CLASSES': 'rest_framework.permissions.IsAuthenticated',
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny', ),
 }
 
 SPECTACULAR_SETTINGS = {

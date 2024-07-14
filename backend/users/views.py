@@ -1,13 +1,35 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from djoser.views import UserViewSet
+from django.conf import settings
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import status
-from users.serializers import EmailSerializer
+from rest_framework import status, filters
+from users.serializers import (EmailSerializer,
+                               EducationalOrganizationSerializer)
 from rest_framework import permissions
 
 
-from .models import User
+from users.models import User, EducationalOrganization
+from users.mixins import ListRetrieveViewSet
 from api.tasks import send_reset_password_email_without_user
+
+
+class EducationalOrganizationViewSet(ListRetrieveViewSet):
+    """Представляет должности для юзеров.
+
+    Доступны только операции чтения.
+    """
+
+    queryset = EducationalOrganization.objects.all()
+    serializer_class = EducationalOrganizationSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    ordering = ('name',)
+
+    @method_decorator(cache_page(settings.EDUCATIONAL_ORGANIZATIONS_LIST_TTL))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class CustomUserViewSet(UserViewSet):

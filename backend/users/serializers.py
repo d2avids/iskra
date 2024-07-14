@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreatePasswordRetypeSerializer
 
 from users.constants import PROFESSIONAL_COMPETENCES_VALIDATION_MSG
+from users.models import EducationalOrganization
 
 User = get_user_model()
 
@@ -47,5 +48,16 @@ class UserCreateSerializer(UserCreatePasswordRetypeSerializer):
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError('Пользователь с таким email уже существует.')
+            raise serializers.ValidationError(
+                'Пользователь с таким email уже существует.'
+            )
         return value
+
+
+class EducationalOrganizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EducationalOrganization
+        fields = (
+            'id',
+            'name'
+        )
