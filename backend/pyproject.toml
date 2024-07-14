@@ -18,6 +18,9 @@ django-cors-headers = "^4.4.0"
 celery = "^5.4.0"
 django-redis = "^5.4.0"
 eventlet = "^0.36.1"
+pillow = "^10.4.0"
+django-phonenumber-field = "^8.0.0"
+django-phonenumbers = "^1.0.1"
 
 
 [build-system]

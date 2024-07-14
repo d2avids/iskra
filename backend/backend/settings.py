@@ -18,7 +18,6 @@ load_dotenv(find_dotenv())
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 SECRET_KEY = os.getenv('SECRET_KEY', default='key')
 
 DEBUG = os.getenv('DEBUG', default=False) == 'True'
@@ -42,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'phonenumbers',
+    'phonenumber_field',
     'drf_spectacular',
     'rest_framework.authtoken',
     'djoser',
@@ -83,6 +84,44 @@ TEMPLATES = [
     },
 ]
 
+LOGS_PATH = os.path.join(BASE_DIR, 'logs')
+os.makedirs(LOGS_PATH, exist_ok=True)
+
+LOGS_FILENAME = os.path.join(LOGS_PATH, 'backend.log')
+LOG_MAX_BYTES = 5 * 1024 * 1024 # 5 MB
+LOGS_BACKUP_COUNT = 10
+
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGS_FILENAME,
+            'maxBytes': LOG_MAX_BYTES,
+            'backupCount': LOGS_BACKUP_COUNT,
+            'level': 'INFO',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 if DATABASE == 'sqlite':
@@ -119,7 +158,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -141,11 +179,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    'DEFAULT_AUTHENTICATION_CLASSES':[ 
-        'rest_framework.authentication.TokenAuthentication', 
-        'rest_framework.authentication.BasicAuthentication', 
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication'
-        ],
+    ],
     'DEFAULT_PERMISSION_CLASSES': 'rest_framework.permissions.IsAuthenticated',
 }
 
@@ -162,18 +200,17 @@ SPECTACULAR_SETTINGS = {
     },
 }
 
-
 DJOSER = {
     'USER_ID_FIELD': 'id',
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
     'SEND_ACTIVATION_EMAIL': False,
-    'HIDE_USERS': False,
+    'HIDE_USERS': True,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': False,
     'PASSWORD_RESET_CONFIRM_RETYPE': False,
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'SERIALIZERS': {
-        'user_create': 'users.serializers.UserCreateSerializer',
+        'user_create_password_retype': 'users.serializers.UserCreateSerializer',
         'user': 'users.serializers.UserSerializer',
         'current_user': 'users.serializers.UserSerializer',
     },
@@ -181,7 +218,6 @@ DJOSER = {
         'user_list': ['djoser.permissions.CurrentUserOrAdmin'],
         'user': ['djoser.permissions.CurrentUserOrAdmin'],
         'activation': ['rest_framework.permissions.IsAdminUser'],
-        'password_reset': ['rest_framework.permissions.IsAdminUser'],
     },
 }
 

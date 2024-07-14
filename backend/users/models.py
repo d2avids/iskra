@@ -1,5 +1,10 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.core.exceptions import ValidationError
+from phonenumber_field.modelfields import PhoneNumberField
+
+from users.constants import PROFESSIONAL_COMPETENCES_VALIDATION_MSG
+from users.utils import users_photo_path
 
 
 class CustomUserManager(BaseUserManager):
@@ -16,6 +21,19 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
+
+
+class EducationalOrganization(models.Model):
+    name = models.TextField(
+        verbose_name='Наименование образовательной организации'
+    )
+
+    class Meta:
+        verbose_name_plural = 'Образовательные организации'
+        verbose_name = 'Образовательная организация'
+
+    def __str__(self):
+        return self.name
     
 
 class User(AbstractUser):
@@ -25,13 +43,28 @@ class User(AbstractUser):
         unique=True,
         max_length=254,
     )
+    photo = models.ImageField(
+        verbose_name='Фото',
+        upload_to=users_photo_path,
+        blank=True,
+        null=True
+    )
     last_name = models.CharField(
         verbose_name='Фамилия',
-        max_length=30
+        max_length=30,
+        blank=True,
+        null=True
     )
     first_name = models.CharField(
         verbose_name='Имя',
-        max_length=30
+        max_length=30,
+        blank=True,
+        null=True
+    )
+    phone_number = PhoneNumberField(
+        region='RU',
+        blank=True,
+        null=True
     )
     patronymic = models.CharField(
         verbose_name='Отчество',
@@ -39,12 +72,33 @@ class User(AbstractUser):
         blank=True,
         null=True
     )
-    data_processing_agreement = models.BooleanField(
-        verbose_name='Согласие на обработку персональных данных',
-        default=True
+    telegram = models.CharField(
+        verbose_name='Telegram',
+        max_length=45,
+        blank=True,
+        null=True
     )
-    confidential_policy_agreement = models.BooleanField(
-        verbose_name='Согласие с политикой конфиденциальности',
+    professional_competencies = models.JSONField(
+        verbose_name='Профессиональные компетенции',
+        default=dict,
+        blank=True,
+        null=True
+    )
+    educational_organization = models.ForeignKey(
+        to='EducationalOrganization',
+        verbose_name='Образование',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
+    )
+    competencies = models.TextField(
+        verbose_name='Компетенции',
+        blank=True,
+        null=True
+    )
+    data_processing_confidential_policy_agreement = models.BooleanField(
+        verbose_name='Согласие на обработку персональных '
+                     'данных и политикой конфиденциальности',
         default=True
     )
 
@@ -59,4 +113,8 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
 
     def __str__(self):
-        return f'Пользователь {self.first_name}'
+        return self.email
+
+    def clean(self):
+        if not isinstance(self.professional_competencies, list):
+            raise ValidationError(PROFESSIONAL_COMPETENCES_VALIDATION_MSG)
