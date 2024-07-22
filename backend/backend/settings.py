@@ -209,7 +209,7 @@ DJOSER = {
     'HIDE_USERS': True,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': False,
     'PASSWORD_RESET_CONFIRM_RETYPE': False,
-    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'restore-password/confirm/{uid}/{token}',
     'SERIALIZERS': {
         'user_create_password_retype': 'users.serializers.UserCreateSerializer',
         'user': 'users.serializers.UserSerializer',
