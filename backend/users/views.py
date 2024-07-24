@@ -105,7 +105,7 @@ class UserTestAnswerListRetrieveView(generics.RetrieveAPIView):
         return UserTestAnswer.objects.filter(user=self.request.user)
     
 
-class UserTestAnswerRetrieveListView(generics.GenericAPIView):
+class UserTestAnswerRetrieveView(generics.GenericAPIView):
     serializer_class = AnswerRetrieveSerializer
     permission_classes = [permissions.IsAuthenticated]
 
