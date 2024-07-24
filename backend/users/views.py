@@ -6,11 +6,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status, filters
 from users.serializers import (EmailSerializer,
-                               EducationalOrganizationSerializer)
-from rest_framework import permissions
+                               EducationalOrganizationSerializer,
+                               UserTestAnswerSerializer,
+                               AnswerRetrieveSerializer)
+from rest_framework import permissions, generics
+from rest_framework.pagination import PageNumberPagination
 
 
-from users.models import User, EducationalOrganization
+from users.models import User, EducationalOrganization, UserTestAnswer
 from users.mixins import ListRetrieveViewSet
 from api.tasks import send_reset_password_email_without_user
 
@@ -73,3 +76,51 @@ class CustomUserViewSet(UserViewSet):
                 )},
                 status=status.HTTP_409_CONFLICT
             )
+        
+
+class TestPagination(PageNumberPagination):
+    page_size = 12
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+
+class UserTestAnswerListView(generics.ListCreateAPIView):
+    serializer_class = UserTestAnswerSerializer
+    pagination_class = TestPagination
+    permissions_class = (permissions.IsAuthenticated)
+
+    def get_queryset(self):
+        return UserTestAnswer.objects.filter(user=self.request.user)
+    
+    def create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class UserTestAnswerListRetrieveView(generics.RetrieveAPIView):
+    queryset = UserTestAnswer.objects.all()
+    serializer_class = UserTestAnswerSerializer
+    permissions_class = (permissions.IsAuthenticated)
+
+    def get_queryset(self):
+        return UserTestAnswer.objects.filter(user=self.request.user)
+    
+
+class UserTestAnswerRetrieveListView(generics.GenericAPIView):
+    serializer_class = AnswerRetrieveSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        test_answer_id = kwargs.get('test_answer_id')
+        index = kwargs.get('index')
+
+        try:
+            test_answer = UserTestAnswer.objects.get(id=test_answer_id, user=request.user)
+        except UserTestAnswer.DoesNotExist:
+            raise ('Test answer not found.')
+
+        try:
+            answer = test_answer.answers[index]
+        except IndexError:
+            raise ('Answer index out of range.')
+
+        return Response({'answer': answer})

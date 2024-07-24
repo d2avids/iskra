@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreatePasswordRetypeSerializer
 
 from users.constants import PROFESSIONAL_COMPETENCES_VALIDATION_MSG
-from users.models import EducationalOrganization
+from users.models import EducationalOrganization, UserTestAnswer
 
 User = get_user_model()
 
@@ -61,3 +61,18 @@ class EducationalOrganizationSerializer(serializers.ModelSerializer):
             'id',
             'name'
         )
+
+
+class UserTestAnswerSerializer(serializers.ModelSerializer):
+    answers = serializers.ListField(child=serializers.IntegerField())
+    class Meta:
+        model = UserTestAnswer
+        fields = (
+            'id',
+            'answers',
+            'created'
+        )
+
+
+class AnswerRetrieveSerializer(serializers.Serializer):
+    answer = serializers.IntegerField()

@@ -118,3 +118,22 @@ class User(AbstractUser):
     def clean(self):
         if not isinstance(self.professional_competencies, list):
             raise ValidationError(PROFESSIONAL_COMPETENCES_VALIDATION_MSG)
+        
+
+class UserTestAnswer(models.Model):
+    user = models.ForeignKey(
+        to='User',
+        verbose_name='Пользователь',
+        on_delete=models.CASCADE
+    )
+    answers = models.JSONField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Ответы на тест'
+        verbose_name = 'Ответы на тест'
+        ordering = ['-created', '-id']
+
+    def __str__(self):
+        return f'Ответы пользователя {self.user.email} {self.created}'
+
