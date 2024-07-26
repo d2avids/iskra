@@ -1,9 +1,10 @@
-def users_photo_path(instance, filename) -> str:
+def users_files_path(instance, filename) -> str:
     """Функция для формирования пути сохранения изображения.
 
     :param instance: Экземпляр модели.
-    :param filename: Имя файла. Добавляем к имени текущую дату и время.
-    :return: Путь к изображению.
-    Сохраняем в users/{user_id}/photo
+    :param filename: Имя файла.
+    :return: Путь к файлу.
     """
-    return f'users/{instance.id}/photo'
+    filename = filename.split('.')
+    instance_id = instance.id if instance.id else instance.user.id
+    return f'users/{instance_id}/{instance.__class__.__name__}/{filename[0][:25]}.{filename[1]}'

@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from phonenumber_field.modelfields import PhoneNumberField
 
 from users.constants import PROFESSIONAL_COMPETENCES_VALIDATION_MSG
-from users.utils import users_photo_path
+from users.utils import users_files_path
 
 
 class CustomUserManager(BaseUserManager):
@@ -45,7 +45,7 @@ class User(AbstractUser):
     )
     photo = models.ImageField(
         verbose_name='Фото',
-        upload_to=users_photo_path,
+        upload_to=users_files_path,
         blank=True,
         null=True
     )
@@ -84,6 +84,27 @@ class User(AbstractUser):
         blank=True,
         null=True
     )
+    professional_interests = models.CharField(
+        max_length=255,
+        verbose_name='Профессиональные интересы',
+        blank=True,
+        null=True
+    )
+    specialty = models.TextField(
+        verbose_name='Специальность',
+        blank=True,
+        null=True
+    )
+    achievements = models.TextField(
+        verbose_name='Достижения',
+        blank=True,
+        null=True
+    )
+    competitions = models.TextField(
+        verbose_name='Конкурсы',
+        blank=True,
+        null=True
+    )
     educational_organization = models.ForeignKey(
         to='EducationalOrganization',
         verbose_name='Образование',
@@ -116,5 +137,28 @@ class User(AbstractUser):
         return self.email
 
     def clean(self):
-        if not isinstance(self.professional_competencies, list):
+        if (
+                self.professional_competencies and self.professional_competencies not in ('[]', '{}')
+                and not isinstance(self.professional_competencies, list)
+        ):
             raise ValidationError(PROFESSIONAL_COMPETENCES_VALIDATION_MSG)
+
+
+class UserCertificate(models.Model):
+    user = models.ForeignKey(
+        'User',
+        on_delete=models.CASCADE,
+        related_name='certificates',
+        verbose_name='Сертификаты'
+    )
+    certificate = models.FileField(
+        verbose_name='Сертификат',
+        upload_to=users_files_path
+    )
+
+    def __str__(self):
+        return f'Сертификат id {self.id} пользователя id {self.user.id}'
+
+    class Meta:
+        verbose_name_plural = 'Сертификаты пользователей'
+        verbose_name = 'Сертификат пользователя'

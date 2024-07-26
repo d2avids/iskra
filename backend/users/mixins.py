@@ -7,3 +7,12 @@ class ListRetrieveViewSet(mixins.RetrieveModelMixin,
                           GenericViewSet):
     """Миксин, разрешающий только методы чтения."""
     pass
+
+
+class ListRetrieveCreateDeleteViewSet(mixins.ListModelMixin,
+                                      mixins.RetrieveModelMixin,
+                                      mixins.CreateModelMixin,
+                                      mixins.DestroyModelMixin,
+                                      GenericViewSet):
+    """Миксин, разрешающий методы чтения, создания и удаления."""
+    pass

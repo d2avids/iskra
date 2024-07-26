@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
                 ('email', models.EmailField(max_length=254, unique=True, verbose_name='Email')),
-                ('photo', models.ImageField(upload_to=users.utils.users_photo_path, verbose_name='Фото')),
+                ('photo', models.ImageField(upload_to=users.utils.users_files_path, verbose_name='Фото')),
                 ('last_name', models.CharField(blank=True, max_length=30, null=True, verbose_name='Фамилия')),
                 ('first_name', models.CharField(blank=True, max_length=30, null=True, verbose_name='Имя')),
                 ('phone_number', phonenumber_field.modelfields.PhoneNumberField(blank=True, max_length=128, null=True, region='RU')),

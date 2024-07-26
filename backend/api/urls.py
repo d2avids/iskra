@@ -2,13 +2,14 @@ from rest_framework import routers
 from django.urls import path, include
 
 from api.constants import POST_RESET_PASSWORD
-from users.views import CustomUserViewSet, EducationalOrganizationViewSet
+from users.views import CustomUserViewSet, EducationalOrganizationViewSet, UserCertificateViewSet
 
 router = routers.DefaultRouter()
+router.register(r'users/certificates', UserCertificateViewSet, basename='certificates')
 router.register(
     r'educational_organizations',
     EducationalOrganizationViewSet,
-    basename='educationl_organization'
+    basename='educational_organizations'
 )
 
 

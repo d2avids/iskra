@@ -3,7 +3,13 @@ from django.contrib.auth.models import Group
 from django.conf import settings
 from rest_framework.authtoken.models import TokenProxy
 
-from users.models import User, EducationalOrganization
+from users.models import User, EducationalOrganization, UserCertificate
+
+
+class CertificateAdmin(admin.StackedInline):
+    model = UserCertificate
+    extra = 0
+
 
 
 @admin.register(User)
@@ -27,6 +33,7 @@ class UserAdmin(admin.ModelAdmin):
         'phone_number',
         'telegram'
     )
+    inlines = [CertificateAdmin]
 
 
 @admin.register(EducationalOrganization)

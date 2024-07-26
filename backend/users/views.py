@@ -5,13 +5,15 @@ from django.conf import settings
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status, filters
+from rest_framework.viewsets import ModelViewSet
+
 from users.serializers import (EmailSerializer,
-                               EducationalOrganizationSerializer)
+                               EducationalOrganizationSerializer, UserCertificateSerializer)
 from rest_framework import permissions
 
 
-from users.models import User, EducationalOrganization
-from users.mixins import ListRetrieveViewSet
+from users.models import User, EducationalOrganization, UserCertificate
+from users.mixins import ListRetrieveViewSet, ListRetrieveCreateDeleteViewSet
 from api.tasks import send_reset_password_email_without_user
 
 
@@ -32,9 +34,25 @@ class EducationalOrganizationViewSet(ListRetrieveViewSet):
         return super().list(request, *args, **kwargs)
 
 
+class UserCertificateViewSet(ListRetrieveCreateDeleteViewSet):
+    """Для работы с сертификатами юзера.
+
+    Авторизованный имеет доступ к получению и удалению только своих сертификатов.
+    """
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = UserCertificateSerializer
+
+    def get_queryset(self):
+        return UserCertificate.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
 class CustomUserViewSet(UserViewSet):
     """Кастомный вьюсет юзера.
-    Доступно изменение метода сброса пароля reset_password
+
+    Изменен метод сброса пароля reset_password
     """
 
     @action(
