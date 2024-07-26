@@ -91,10 +91,5 @@ class UserTestAnswerSerializer(serializers.ModelSerializer):
         )
 
 
-class LatestUserTestAnswerSerializer(serializers.Serializer):
-    previous = UserTestAnswerSerializer()
-    current = UserTestAnswerSerializer()
-    
-
 class AnswerRetrieveSerializer(serializers.Serializer):
     answer = serializers.IntegerField()
