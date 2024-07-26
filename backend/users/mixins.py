@@ -16,3 +16,11 @@ class ListRetrieveCreateDeleteViewSet(mixins.ListModelMixin,
                                       GenericViewSet):
     """Миксин, разрешающий методы чтения, создания и удаления."""
     pass
+
+
+class ListRetrieveCreateViewSet(mixins.ListModelMixin,
+                                      mixins.RetrieveModelMixin,
+                                      mixins.CreateModelMixin,
+                                      GenericViewSet):
+    """Миксин, разрешающий методы чтения и создания."""
+    pass

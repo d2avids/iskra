@@ -162,3 +162,21 @@ class UserCertificate(models.Model):
     class Meta:
         verbose_name_plural = 'Сертификаты пользователей'
         verbose_name = 'Сертификат пользователя'
+
+
+class UserTestAnswer(models.Model):
+    user = models.ForeignKey(
+        to='User',
+        verbose_name='Пользователь',
+        on_delete=models.CASCADE
+    )
+    answers = models.JSONField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Ответы на тест'
+        verbose_name = 'Ответы на тест'
+        ordering = ['-created', '-id']
+
+    def __str__(self):
+        return f'Ответы пользователя {self.user.email} {self.created}'
