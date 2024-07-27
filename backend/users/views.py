@@ -1,11 +1,11 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from djoser.views import UserViewSet
+import djoser.serializers
 from django.conf import settings
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status, filters
-from rest_framework.viewsets import ModelViewSet
 
 from users.serializers import (EmailSerializer,
                                EducationalOrganizationSerializer, UserCertificateSerializer)
@@ -54,7 +54,6 @@ class CustomUserViewSet(UserViewSet):
 
     Изменен метод сброса пароля reset_password
     """
-
     @action(
             methods=['post'],
             detail=False,

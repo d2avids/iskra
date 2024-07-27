@@ -214,6 +214,7 @@ DJOSER = {
         'user_create_password_retype': 'users.serializers.UserCreateSerializer',
         'user': 'users.serializers.UserSerializer',
         'current_user': 'users.serializers.UserSerializer',
+        'user_delete': 'users.serializers.CustomUserDeleteSerializer'
     },
     'PERMISSIONS': {
         'user_list': ['djoser.permissions.CurrentUserOrAdmin'],

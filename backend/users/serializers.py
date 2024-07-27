@@ -22,7 +22,8 @@ class UserCertificateSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     educational_organization = serializers.PrimaryKeyRelatedField(
-        queryset=EducationalOrganization.objects.all()
+        queryset=EducationalOrganization.objects.all(),
+        allow_null=True
     )
     certificates = UserCertificateSerializer(many=True, read_only=True)
 
@@ -53,6 +54,12 @@ class UserSerializer(serializers.ModelSerializer):
             PROFESSIONAL_COMPETENCES_VALIDATION_MSG
         )
 
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        if repr['professional_competencies'] in ({}, '{}', [], '[]'):
+            repr['professional_competencies'] = None
+        return repr
+
 
 class UserCreateSerializer(UserCreatePasswordRetypeSerializer):
     class Meta(UserCreatePasswordRetypeSerializer.Meta):
@@ -77,3 +84,7 @@ class EducationalOrganizationSerializer(serializers.ModelSerializer):
             'id',
             'name'
         )
+
+
+class CustomUserDeleteSerializer(serializers.Serializer):
+    pass
