@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status, filters
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.exceptions import NotFound, ValidationError
+from datetime import datetime, timedelta
 
 from users.serializers import (EmailSerializer,
                                EducationalOrganizationSerializer, UserCertificateSerializer,
@@ -98,7 +99,7 @@ class CustomUserViewSet(UserViewSet):
 
 
 class TestPagination(PageNumberPagination):
-    page_size = 12
+    page_size = 13
     page_size_query_param = 'page_size'
     max_page_size = 100
 
@@ -117,9 +118,12 @@ class UserTestAnswerView(ListRetrieveCreateViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
-        last_answer = UserTestAnswer.objects.filter(user=user).order_by('-created').first()
-        if last_answer and (now() - last_answer.created).days < 120: 
-            raise ValidationError("Тест можно пройти раз в 4 месяца.")
+        today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_end = today_start + timedelta(days=1)
+        attempts_today = UserTestAnswer.objects.filter(user=user, created__range=(today_start, today_end)).count()
+
+        if attempts_today >= 10:
+            raise ValidationError("Тест можно пройти не более 10 раз в день.")
         serializer.save(user=user)
 
     @action(detail=False, methods=['get'], url_path='latest')
