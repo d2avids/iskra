@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreatePasswordRetypeSerializer
+from datetime import datetime, timedelta
 
 from users.constants import PROFESSIONAL_COMPETENCES_VALIDATION_MSG
 from users.models import EducationalOrganization, UserCertificate, UserTestAnswer
@@ -97,6 +98,17 @@ class UserTestAnswerSerializer(serializers.ModelSerializer):
             'answers',
             'created'
         )
+
+    def validate(self, data):
+        user = self.context['request'].user
+        today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_end = today_start + timedelta(days=1)
+        attempts_today = UserTestAnswer.objects.filter(user=user, created__range=(today_start, today_end)).count()
+        self.context['attempts_today'] = attempts_today
+
+        if attempts_today >= 10:
+            raise serializers.ValidationError("Тест можно пройти не более 10 раз в день.")
+        return data
 
 
 class AnswerRetrieveSerializer(serializers.Serializer):
