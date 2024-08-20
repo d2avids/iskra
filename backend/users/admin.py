@@ -54,15 +54,70 @@ if not settings.DEBUG:
 
 @admin.register(UserTestAnswer)
 class TestAnswerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'get_user_email', 'get_user_id')
+    list_display = ('id', 'get_user_id', 'get_user_email', 'get_erm', 'get_tmm', 'get_ss', 'get_ers', 'get_cntl',
+                    'get_tms', 'get_emp', 'get_eri', 'get_pl', 'get_pro', 'get_sf', 'get_imp', 'get_neu')
     search_fields = ('user__email',)
     actions = ['export_to_excel']
 
     def get_user_id(self, obj):
         return obj.user.id
+    get_user_id.short_description = 'User ID'
     
     def get_user_email(self, obj):
         return obj.user.email
+    get_user_email.short_description = 'User Email'
+
+    def get_erm(self, obj):
+        return obj.answers[0]
+    get_erm.short_description = 'ERM'
+
+    def get_tmm(self, obj):
+        return obj.answers[1]
+    get_tmm.short_description = 'TMM'
+
+    def get_ss(self, obj):
+        return obj.answers[2]
+    get_ss.short_description = 'SS'
+
+    def get_ers(self, obj):
+        return obj.answers[3]
+    get_ers.short_description = 'ERS'
+
+    def get_tms(self, obj):
+        return obj.answers[4]
+    get_tms.short_description = 'TMS'
+
+    def get_emp(self, obj):
+        return obj.answers[5]
+    get_emp.short_description = 'EMP'
+
+    def get_eri(self, obj):
+        return obj.answers[6]
+    get_eri.short_description = 'ERI'
+
+    def get_pl(self, obj):
+        return obj.answers[7]
+    get_pl.short_description = 'PL'
+
+    def get_pro(self, obj):
+        return obj.answers[8]
+    get_pro.short_description = 'PRO'
+
+    def get_sf(self, obj):
+        return obj.answers[9]
+    get_sf.short_description = 'SF'
+
+    def get_imp(self, obj):
+        return obj.answers[10]
+    get_imp.short_description = 'IMP'
+
+    def get_neu(self, obj):
+        return obj.answers[11]
+    get_neu.short_description = 'NEU'
+
+    def get_cntl(self, obj):
+        return obj.answers[12]
+    get_cntl.short_description = 'CNTL'
 
     def export_to_excel(self, request, queryset):
         workbook = openpyxl.Workbook()
@@ -130,3 +185,5 @@ class TestAnswerAdmin(admin.ModelAdmin):
 
         workbook.save(response)
         return response
+    
+    export_to_excel.short_description = 'Экспортировать в Excel'

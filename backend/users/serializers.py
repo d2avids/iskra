@@ -45,7 +45,8 @@ class UserSerializer(serializers.ModelSerializer):
             'specialty',
             'achievements',
             'competitions',
-            'certificates'
+            'certificates',
+            'role'
         )
 
     def validate_professional_competencies(self, value):
@@ -85,7 +86,6 @@ class EducationalOrganizationSerializer(serializers.ModelSerializer):
             'id',
             'name'
         )
-
 
 
 class UserTestAnswerSerializer(serializers.ModelSerializer):
