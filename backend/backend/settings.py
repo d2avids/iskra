@@ -256,6 +256,15 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', False) == 'True'
 
+CORS_ORIGIN_WHITELIST = os.getenv(
+    'CORS_ORIGIN_WHITELIST',
+    default='127.0.0.1,localhost,0.0.0.0'
+).split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    'CSRF_TRUSTED_ORIGINS',
+    default='127.0.0.1,localhost,0.0.0.0'
+).split(',')
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
