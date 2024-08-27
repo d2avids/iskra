@@ -14,14 +14,13 @@ from datetime import datetime, timedelta
 from users.serializers import (EmailSerializer,
                                EducationalOrganizationSerializer, UserCertificateSerializer,
                                UserTestAnswerSerializer, AnswerRetrieveSerializer)
-from rest_framework import permissions, generics
+from rest_framework import permissions
 from rest_framework.pagination import PageNumberPagination
 
 
 from users.models import User, EducationalOrganization, UserCertificate, UserTestAnswer
 from users.mixins import ListRetrieveViewSet, ListRetrieveCreateDeleteViewSet, ListRetrieveCreateViewSet
 from api.tasks import send_reset_password_email_without_user
-from django.utils.timezone import now
 
 
 class EducationalOrganizationViewSet(ListRetrieveViewSet):
