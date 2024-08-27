@@ -7,20 +7,19 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status, filters
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.exceptions import NotFound
 
 
 from users.serializers import (EmailSerializer,
                                EducationalOrganizationSerializer, UserCertificateSerializer,
                                UserTestAnswerSerializer, AnswerRetrieveSerializer)
-from rest_framework import permissions, generics
+from rest_framework import permissions
 from rest_framework.pagination import PageNumberPagination
 
 
 from users.models import User, EducationalOrganization, UserCertificate, UserTestAnswer
 from users.mixins import ListRetrieveViewSet, ListRetrieveCreateDeleteViewSet, ListRetrieveCreateViewSet
 from api.tasks import send_reset_password_email_without_user
-from django.utils.timezone import now
 
 
 class EducationalOrganizationViewSet(ListRetrieveViewSet):
@@ -99,7 +98,7 @@ class CustomUserViewSet(UserViewSet):
 
 
 class TestPagination(PageNumberPagination):
-    page_size = 12
+    page_size = 13
     page_size_query_param = 'page_size'
     max_page_size = 100
 
@@ -117,11 +116,7 @@ class UserTestAnswerView(ListRetrieveCreateViewSet):
         return UserTestAnswer.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        user = self.request.user
-        last_answer = UserTestAnswer.objects.filter(user=user).order_by('-created').first()
-        if last_answer and (now() - last_answer.created).days < 120: 
-            raise ValidationError("Тест можно пройти раз в 4 месяца.")
-        serializer.save(user=user)
+         serializer.save(user=self.request.user)
 
     @action(detail=False, methods=['get'], url_path='latest')
     def get_latest(self, request):

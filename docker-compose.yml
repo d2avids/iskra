@@ -4,6 +4,9 @@ volumes:
   static:
   media:
   pg_data:
+  certbot-etc:
+  certbot-var:
+  nginx-data:
 
 networks:
   internal:
@@ -58,3 +61,41 @@ services:
       - backend
     networks:
       - internal
+# frontend:
+    #  image: darktau21/spark-frontend:latest
+    #  restart: always
+    #  env_file: .env
+    #  depends_on:
+    #    - backend
+    #  volumes:
+    #    - frontend_dist:/app/src/app/dist
+    #  networks:
+    #    - internal
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "8000:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      # - frontend_dist:/usr/src/app/src/app/dist
+      - static:/usr/src/app/static
+      - media:/usr/src/app/media
+      - certbot-etc:/etc/letsencrypt
+      - nginx-data:/var/www/certbot
+    depends_on:
+      - backend
+      # - frontend
+    networks:
+      - internal
+  cerbot:
+   image: certbot/certbot
+   depends_on:
+    - nginx
+   volumes:
+    - certbot-etc:/etc/letsencrypt
+    - certbot-var:/var/lib/letsencrypt
+    - nginx-data:/var/www/certbot
+   command: certonly --webroot --webroot-path=/usr/src/app/static --email admin@mail.ru --agree-tos --no-eff-email -d profile.iskra-test.ru -d api.iskra-test.ru -d super.test-iskra.ru

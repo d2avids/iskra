@@ -122,6 +122,17 @@ class User(AbstractUser):
                      'данных и политикой конфиденциальности',
         default=True
     )
+    role = models.CharField(
+        verbose_name='Роль',
+        max_length=20,
+        choices=(
+            ('student', 'Студент'),
+            ('teacher', 'Преподаватель'),
+            ('director', 'Руководитель'),
+            ('parent', 'Родитель'),
+        ),
+        default='student'
+    )
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
