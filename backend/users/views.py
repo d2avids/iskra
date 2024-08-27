@@ -7,7 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status, filters
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, ValidationError
+from datetime import datetime, timedelta
 
 
 from users.serializers import (EmailSerializer,
@@ -116,7 +117,14 @@ class UserTestAnswerView(ListRetrieveCreateViewSet):
         return UserTestAnswer.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-         serializer.save(user=self.request.user)
+        user = self.request.user
+        today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_end = today_start + timedelta(days=1)
+        attempts_today = UserTestAnswer.objects.filter(user=user, created__range=(today_start, today_end)).count()
+
+        if attempts_today >= 10:
+            raise ValidationError("Тест можно пройти не более 10 раз в день.")
+        serializer.save(user=user)
 
     @action(detail=False, methods=['get'], url_path='latest')
     def get_latest(self, request):
