@@ -46,8 +46,10 @@ class UserSerializer(serializers.ModelSerializer):
             'achievements',
             'competitions',
             'certificates',
-            'role'
+            'role',
+            'email'
         )
+        read_only_fields = ('email',)
 
     def validate_professional_competencies(self, value):
         if isinstance(value, list):
