@@ -60,3 +60,16 @@ services:
       - backend
     networks:
       - internal
+  nginx:
+    image: nginx:alpine
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "8000:80"
+    volumes:
+      - static:/var/lib/docker/volumes/iskra_static/_data/
+      - media:/var/lib/docker/volumes/iskra_media/_data/
+      - ./nginx_internal.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - internal
