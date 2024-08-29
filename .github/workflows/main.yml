@@ -47,6 +47,14 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           source: "nginx.conf"
           target: /root/iskra
+      - name: Copy nginx_internal.conf
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.PASSWORD }}
+          source: "nginx_internal.conf"
+          target: /root/iskra
       - name: Executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
