@@ -68,8 +68,8 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - static:/var/lib/docker/volumes/iskra_static/_data/
-      - media:/var/lib/docker/volumes/iskra_media/_data/
+      - static:/static/
+      - media:/media/
       - ./nginx_internal.conf:/etc/nginx/conf.d/default.conf
     networks:
       - internal
