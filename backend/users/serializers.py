@@ -24,9 +24,10 @@ class UserCertificateSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     educational_organization = serializers.PrimaryKeyRelatedField(
         queryset=EducationalOrganization.objects.all(),
-        allow_null=True
+        allow_null=True,
+        required=False,
     )
-    certificates = UserCertificateSerializer(many=True, read_only=True)
+    certificates = UserCertificateSerializer(many=True, read_only=True, required=False, allow_null=True)
 
     class Meta:
         model = User
