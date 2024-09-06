@@ -1,16 +1,14 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from djoser.views import UserViewSet
-import djoser.serializers
 from django.conf import settings
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status, filters
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.exceptions import NotFound, ValidationError
 from datetime import datetime, timedelta
 
-
+from api.pagination import Limit250OffsetPagination
 from users.serializers import (EmailSerializer,
                                EducationalOrganizationSerializer, UserCertificateSerializer,
                                UserTestAnswerSerializer, AnswerRetrieveSerializer)
@@ -34,6 +32,7 @@ class EducationalOrganizationViewSet(ListRetrieveViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     ordering = ('name',)
+    pagination_class = Limit250OffsetPagination
 
     @method_decorator(cache_page(settings.EDUCATIONAL_ORGANIZATIONS_LIST_TTL))
     def list(self, request, *args, **kwargs):
