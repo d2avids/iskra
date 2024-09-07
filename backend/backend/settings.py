@@ -32,7 +32,6 @@ DATABASE = os.getenv('DATABASE', default='sqlite')
 RUN_TYPE = os.getenv('RUN_TYPE', default='LOCAL')
 
 EDUCATIONAL_ORGANIZATIONS_LIST_TTL = 60
-TEST_ANSWER_TTL = 60
 
 INSTALLED_APPS = [
     'django.contrib.admin',
