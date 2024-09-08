@@ -66,7 +66,7 @@ class UserSerializer(serializers.ModelSerializer):
             PROFESSIONAL_INTERESTS_VALIDATION_MSG
         )
 
-    def to_representation_interests(self, instance):
+    def to_representation(self, instance):
         repr = super().to_representation(instance)
         if repr['professional_interests'] in ({}, '{}', [], '[]'):
             repr['professional_interests'] = None
