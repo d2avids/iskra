@@ -154,7 +154,7 @@ class User(AbstractUser):
                 and not isinstance(self.professional_competencies, list)
         ):
             raise ValidationError(PROFESSIONAL_COMPETENCES_VALIDATION_MSG)
-        elif(
+        if(
                 self.professional_interests and self.professional_interests not in ('[]', '{}')
                 and not isinstance(self.professional_interests, list)
         ):

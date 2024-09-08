@@ -58,12 +58,6 @@ class UserSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError(
             PROFESSIONAL_COMPETENCES_VALIDATION_MSG
         )
-
-    def to_representation_competencies(self, instance):
-        repr = super().to_representation(instance)
-        if repr['professional_competencies'] in ({}, '{}', [], '[]'):
-            repr['professional_competencies'] = None
-        return repr
     
     def validate_professional_interests(self, value):
         if isinstance(value, list):
@@ -76,6 +70,8 @@ class UserSerializer(serializers.ModelSerializer):
         repr = super().to_representation(instance)
         if repr['professional_interests'] in ({}, '{}', [], '[]'):
             repr['professional_interests'] = None
+        if repr['professional_competencies'] in ({}, '{}', [], '[]'):
+            repr['professional_competencies'] = None
         return repr
 
 
