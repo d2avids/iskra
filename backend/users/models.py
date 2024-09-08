@@ -3,7 +3,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from phonenumber_field.modelfields import PhoneNumberField
 
-from users.constants import PROFESSIONAL_COMPETENCES_VALIDATION_MSG
+from users.constants import PROFESSIONAL_COMPETENCES_VALIDATION_MSG, PROFESSIONAL_INTERESTS_VALIDATION_MSG
 from users.utils import users_files_path
 
 
@@ -84,9 +84,10 @@ class User(AbstractUser):
         blank=True,
         null=True
     )
-    professional_interests = models.CharField(
+    professional_interests = models.JSONField(
         max_length=255,
         verbose_name='Профессиональные интересы',
+        default=dict,
         blank=True,
         null=True
     )
@@ -153,6 +154,11 @@ class User(AbstractUser):
                 and not isinstance(self.professional_competencies, list)
         ):
             raise ValidationError(PROFESSIONAL_COMPETENCES_VALIDATION_MSG)
+        if(
+                self.professional_interests and self.professional_interests not in ('[]', '{}')
+                and not isinstance(self.professional_interests, list)
+        ):
+            raise ValidationError(PROFESSIONAL_INTERESTS_VALIDATION_MSG)
 
 
 class UserCertificate(models.Model):
