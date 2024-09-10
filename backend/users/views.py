@@ -108,7 +108,6 @@ class UserTestAnswerView(ListRetrieveCreateViewSet):
     pagination_class = TestPagination
     permission_classes = (permissions.IsAuthenticated,)
 
-    @method_decorator(cache_page(settings.TEST_ANSWER_TTL))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 

@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreatePasswordRetypeSerializer
 from datetime import datetime, timedelta
 
-from users.constants import PROFESSIONAL_COMPETENCES_VALIDATION_MSG
+from users.constants import PROFESSIONAL_COMPETENCES_VALIDATION_MSG, PROFESSIONAL_INTERESTS_VALIDATION_MSG
 from users.models import EducationalOrganization, UserCertificate, UserTestAnswer
 
 User = get_user_model()
@@ -58,9 +58,18 @@ class UserSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError(
             PROFESSIONAL_COMPETENCES_VALIDATION_MSG
         )
+    
+    def validate_professional_interests(self, value):
+        if isinstance(value, list):
+            return value
+        raise serializers.ValidationError(
+            PROFESSIONAL_INTERESTS_VALIDATION_MSG
+        )
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
+        if repr['professional_interests'] in ({}, '{}', [], '[]'):
+            repr['professional_interests'] = None
         if repr['professional_competencies'] in ({}, '{}', [], '[]'):
             repr['professional_competencies'] = None
         return repr
