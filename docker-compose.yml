@@ -46,7 +46,7 @@ services:
     networks:
       - internal
     environment:
-      - GUNICORN_WORKERS=3
+      - GUNICORN_WORKERS=2
       - GUNICORN_TIMEOUT=360
   celery_worker:
     image: d2avids/iskra:latest
