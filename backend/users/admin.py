@@ -187,3 +187,7 @@ class TestAnswerAdmin(admin.ModelAdmin):
         return response
     
     export_to_excel.short_description = 'Экспортировать в Excel'
+
+
+admin.site.site_header = 'Искра'
+admin.site.index_title = 'Администрирование Искра'
